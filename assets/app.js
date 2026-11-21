@@ -8,7 +8,10 @@ window.matchMedia('(min-width: 801px)').addEventListener('change', closeMenu);
 // Convenção de compatibilidade solicitada: remove somente o nono dígito móvel após o DDD.
 function whatsappBrazil(nationalNumber) { const digits = nationalNumber.replace(/\D/g, ''); if (/^\d{2}9\d{8}$/.test(digits)) return `https://wa.me/55${digits.slice(0, 2)}${digits.slice(3)}`; if (/^\d{10}$/.test(digits)) return `https://wa.me/55${digits}`; return null; }
 const whatsapp = whatsappBrazil('62994033634');
-if (whatsapp) document.querySelectorAll('[data-whatsapp]').forEach(link => { link.href = whatsapp; });
+if (whatsapp) document.querySelectorAll('[data-whatsapp]').forEach(link => {
+  const message = link.dataset.whatsappMessage;
+  link.href = message ? `${whatsapp}?text=${encodeURIComponent(message)}` : whatsapp;
+});
 document.querySelector('#year').textContent = new Date().getFullYear();
 if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) { const observer = new IntersectionObserver(entries => { entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('revealed'); observer.unobserve(entry.target); } }); }, { threshold: 0.08 }); document.querySelectorAll('.about-content, .care-row, .process-intro, .steps li, .faq>div, .contact h2').forEach(element => { element.classList.add('reveal-ready'); observer.observe(element); }); }
 // Gentle depth on devices with a precise pointer; no motion on touch or reduced-motion settings.
